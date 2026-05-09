@@ -311,12 +311,7 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
     <div class="chart-box">
       <div class="chart-title" id="c3a-title">Servicios Mensuales por Área — Abr 2023 / Mar 2026</div>
       <div class="chart-canvas" style="height:320px"><canvas id="c3a"></canvas></div>
-      <div class="legend">
-        <div class="leg-item"><div class="leg-dot" style="background:#3b82f6"></div>Europa</div>
-        <div class="leg-item"><div class="leg-dot" style="background:#10b981"></div>Far East</div>
-        <div class="leg-item"><div class="leg-dot" style="background:#a78bfa"></div>USA Canadá</div>
-        <div class="leg-item"><div class="leg-dot" style="background:#f97316"></div>Ret. Rusia-USA-EUR</div>
-      </div>
+
     </div>
   </div>
 </div>
@@ -483,11 +478,11 @@ let htTotal = 0;  // Actualizado dinámicamente en update() y en initCharts()
 const SCATTER_COLORS = {
   'Europa':'rgba(59,130,246,.75)', 'Far East':'rgba(16,185,129,.75)',
   'USA Canadá':'rgba(167,139,250,.75)', 'Ret. Rusia-USA-EUR':'rgba(249,115,22,.75)',
-  'Centro Sudamérica':'rgba(245,158,11,.75)'
+  'Centro Sudamérica':'rgba(236,72,153,.75)'
 };
 const SCATTER_BORDER = {
   'Europa':'#3b82f6','Far East':'#10b981','USA Canadá':'#a78bfa',
-  'Ret. Rusia-USA-EUR':'#f97316','Centro Sudamérica':'#f59e0b'
+  'Ret. Rusia-USA-EUR':'#f97316','Centro Sudamérica':'#ec4899'
 };
 // Bins de costo: X = punto medio del rango, Y = cantidad de equipos en ese rango
 const SCATTER_BINS = [0,5,10,15,20,25,30,35,40,50,60,75,100,150,200];
@@ -767,7 +762,7 @@ function initCharts() {
           const a=(ctx.chart._avgs&&ctx.chart._avgs[ctx.dataIndex]!=null)?ctx.chart._avgs[ctx.dataIndex]:null;
           return v!=null?(a!=null?'$'+a+'  ·  ':'')+(v).toLocaleString('es'):'';
         }},
-        data:AREA_VALS,backgroundColor:['#3b82f6','#10b981','#f59e0b','#a78bfa','#f97316'],
+        data:AREA_VALS,backgroundColor:['#3b82f6','#10b981','#ec4899','#a78bfa','#f97316'],
         borderRadius:4,borderSkipped:false}
     ]},
     options:merge(defs,{
@@ -797,7 +792,7 @@ function initCharts() {
       {label:'Far East',          data:k3init.TFE,  borderColor:'#10b981',backgroundColor:'rgba(16,185,129,.08)',  borderWidth:2.5,pointRadius:0,fill:true,tension:.35,spanGaps:true,cubicInterpolationMode:"monotone"},
       {label:'USA Canadá',        data:k3init.TU,   borderColor:'#a78bfa',backgroundColor:'rgba(167,139,250,.08)', borderWidth:2.5,pointRadius:0,fill:true,tension:.35,spanGaps:true,cubicInterpolationMode:"monotone"},
       {label:'Ret. Rusia-USA-EUR',data:k3init.TRET, borderColor:'#f97316',backgroundColor:'rgba(249,115,22,.08)',  borderWidth:2.5,pointRadius:0,fill:true,tension:.35,spanGaps:true,cubicInterpolationMode:"monotone"},
-      {label:'Centro Sudamérica', data:k3init.TCS,  borderColor:'#f59e0b',backgroundColor:'rgba(245,158,11,.08)',  borderWidth:2.5,pointRadius:0,fill:true,tension:.35,spanGaps:true,cubicInterpolationMode:"monotone"},
+      {label:'Centro Sudamérica', data:k3init.TCS,  borderColor:'#ec4899',backgroundColor:'rgba(236,72,153,.08)',  borderWidth:2.5,pointRadius:0,fill:true,tension:.35,spanGaps:true,cubicInterpolationMode:"monotone"},
     ]},
     options:merge(defs,{
       plugins:{
@@ -827,7 +822,7 @@ function initCharts() {
       scales:{
         x:{ticks:{color:'#64748b',font:{size:9},maxTicksLimit:12},grid:{color:'rgba(255,255,255,.04)'}},
         y:{title:{display:true,text:'Nº Servicios',color:'#64748b',font:{size:10}},
-            ticks:{color:'#64748b',font:{size:10}},grid:{color:'rgba(255,255,255,.05)'}}
+            ticks:{color:'#64748b',font:{size:10},stepSize:50},grid:{color:'rgba(255,255,255,.05)'}}
       }
     })
   });
@@ -981,13 +976,11 @@ function update() {
   // KPI3 — reactivo a año, naviera y área
   const recs3=RECORDS.filter(r=>(sNav==='all'||r.n===sNav)&&(sArea==='all'||r.ar===sArea));
   const k3=computeKPI3(recs3,sAño);
-  C3A.data.labels=k3.labs;
-  C3A.data.datasets[0].data=k3.TE;
-  C3A.data.datasets[1].data=k3.TFE;
-  C3A.data.datasets[2].data=k3.TU;
-  C3A.data.datasets[3].data=k3.TRET;
-  C3A.data.datasets[4].data=k3.TCS;
-  C3A.update();
+  // Chart.js v4: mutar arrays existentes en lugar de reemplazar referencias
+  C3A.data.labels.splice(0, C3A.data.labels.length, ...k3.labs);
+  const k3sets=[k3.TE,k3.TFE,k3.TU,k3.TRET,k3.TCS];
+  C3A.data.datasets.forEach((ds,i)=>{ ds.data.splice(0,ds.data.length,...(k3sets[i]||[])); });
+  C3A.update('none');
   // Título dinámico C3A
   document.getElementById('c3a-title').textContent = sAño==='all'
     ? 'Servicios Mensuales por Área — Abr 2023 / Mar 2026'
