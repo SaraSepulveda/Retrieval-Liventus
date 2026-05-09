@@ -477,12 +477,12 @@ let htTotal = 0;  // Actualizado dinámicamente en update() y en initCharts()
 // SCATTER helpers — scope global para ser accesibles desde update() y processCSV()
 const SCATTER_COLORS = {
   'Europa':'rgba(59,130,246,.75)', 'Far East':'rgba(16,185,129,.75)',
-  'USA Canadá':'rgba(167,139,250,.75)', 'Ret. Rusia-USA-EUR':'rgba(249,115,22,.75)',
-  'Centro Sudamérica':'rgba(236,72,153,.75)'
+  'USA Canadá':'rgba(139,92,246,.75)', 'Ret. Rusia-USA-EUR':'rgba(251,146,60,.75)',
+  'Centro Sudamérica':'rgba(100,116,139,.75)'
 };
 const SCATTER_BORDER = {
-  'Europa':'#3b82f6','Far East':'#10b981','USA Canadá':'#a78bfa',
-  'Ret. Rusia-USA-EUR':'#f97316','Centro Sudamérica':'#ec4899'
+  'Europa':'#3b82f6','Far East':'#10b981','USA Canadá':'#8b5cf6',
+  'Ret. Rusia-USA-EUR':'#fb923c','Centro Sudamérica':'#64748b'
 };
 // Bins de costo: X = punto medio del rango, Y = cantidad de equipos en ese rango
 const SCATTER_BINS = [0,5,10,15,20,25,30,35,40,50,60,75,100,150,200];
@@ -711,7 +711,7 @@ function initCharts() {
         // Vista completa: 3 marcadores de período
         badge(xBetween(0),    '36m · '+W36.a.toLocaleString('es')+' rec.','#10b981', top+14);
         badge(xBetween(n-24), '24m · '+W24.a.toLocaleString('es')+' rec.','#a78bfa', top+14);
-        badge(xBetween(n-12), '12m · '+W12.a.toLocaleString('es')+' rec.','#f59e0b', top+14);
+        badge(xBetween(n-12), '12m · '+W12.a.toLocaleString('es')+' rec.','#14b8a6', top+14);
       } else {
         // Año seleccionado: un marcador con el total del año (filtrado por naviera)
         let totYear=0, recYear=0;
@@ -762,7 +762,7 @@ function initCharts() {
           const a=(ctx.chart._avgs&&ctx.chart._avgs[ctx.dataIndex]!=null)?ctx.chart._avgs[ctx.dataIndex]:null;
           return v!=null?(a!=null?'$'+a+'  ·  ':'')+(v).toLocaleString('es'):'';
         }},
-        data:AREA_VALS,backgroundColor:['#3b82f6','#10b981','#ec4899','#a78bfa','#f97316'],
+        data:AREA_VALS,backgroundColor:['#3b82f6','#64748b','#8b5cf6','#10b981','#fb923c'],
         borderRadius:4,borderSkipped:false}
     ]},
     options:merge(defs,{
@@ -789,10 +789,10 @@ function initCharts() {
     type:'line',
     data:{labels:k3init.labs,datasets:[
       {label:'Europa',            data:k3init.TE,   borderColor:'#3b82f6',backgroundColor:'rgba(59,130,246,.08)',  borderWidth:2.5,pointRadius:0,fill:true,tension:.35,spanGaps:true,cubicInterpolationMode:"monotone"},
-      {label:'Far East',          data:k3init.TFE,  borderColor:'#10b981',backgroundColor:'rgba(16,185,129,.08)',  borderWidth:2.5,pointRadius:0,fill:true,tension:.35,spanGaps:true,cubicInterpolationMode:"monotone"},
-      {label:'USA Canadá',        data:k3init.TU,   borderColor:'#a78bfa',backgroundColor:'rgba(167,139,250,.08)', borderWidth:2.5,pointRadius:0,fill:true,tension:.35,spanGaps:true,cubicInterpolationMode:"monotone"},
-      {label:'Ret. Rusia-USA-EUR',data:k3init.TRET, borderColor:'#f97316',backgroundColor:'rgba(249,115,22,.08)',  borderWidth:2.5,pointRadius:0,fill:true,tension:.35,spanGaps:true,cubicInterpolationMode:"monotone"},
-      {label:'Centro Sudamérica', data:k3init.TCS,  borderColor:'#ec4899',backgroundColor:'rgba(236,72,153,.08)',  borderWidth:2.5,pointRadius:0,fill:true,tension:.35,spanGaps:true,cubicInterpolationMode:"monotone"},
+      {label:'Far East',          data:k3init.TFE,  borderColor:'#10b981',backgroundColor:'rgba(16,185,129,.08)', borderWidth:2.5,pointRadius:0,fill:true,tension:.35,spanGaps:true,cubicInterpolationMode:"monotone"},
+      {label:'USA Canadá',        data:k3init.TU,   borderColor:'#8b5cf6',backgroundColor:'rgba(139,92,246,.08)', borderWidth:2.5,pointRadius:0,fill:true,tension:.35,spanGaps:true,cubicInterpolationMode:"monotone"},
+      {label:'Ret. Rusia-USA-EUR',data:k3init.TRET, borderColor:'#fb923c',backgroundColor:'rgba(251,146,60,.08)',  borderWidth:2.5,pointRadius:0,fill:true,tension:.35,spanGaps:true,cubicInterpolationMode:"monotone"},
+      {label:'Centro Sudamérica', data:k3init.TCS,  borderColor:'#64748b',backgroundColor:'rgba(100,116,139,.08)',  borderWidth:2.5,pointRadius:0,fill:true,tension:.35,spanGaps:true,cubicInterpolationMode:"monotone"},
     ]},
     options:merge(defs,{
       plugins:{
