@@ -17,7 +17,7 @@
   --green:#10b981;--red:#ef4444;--yellow:#f59e0b;
   --text:#f1f5f9;--muted:#64748b;--soft:#94a3b8;
 }
-body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;padding:20px 24px 40px}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;padding:20px 24px 40px;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
 /* ── HEADER ── */
 .hdr{display:flex;flex-direction:column;align-items:center;margin-bottom:24px;gap:0}
 .hdr-left h1{font-size:1.5rem;font-weight:700;letter-spacing:.02em;color:#fff;text-align:center}
@@ -793,11 +793,11 @@ function initCharts() {
   C3A=new Chart(document.getElementById('c3a'),{
     type:'line',
     data:{labels:k3init.labs,datasets:[
-      {label:'Europa',            data:k3init.TE,   borderColor:'#3b82f6',backgroundColor:'rgba(59,130,246,.08)',  borderWidth:2.5,pointRadius:0,fill:true,tension:.35,spanGaps:true},
-      {label:'Far East',          data:k3init.TFE,  borderColor:'#10b981',backgroundColor:'rgba(16,185,129,.08)',  borderWidth:2.5,pointRadius:0,fill:true,tension:.35,spanGaps:true},
-      {label:'USA Canadá',        data:k3init.TU,   borderColor:'#a78bfa',backgroundColor:'rgba(167,139,250,.08)', borderWidth:2.5,pointRadius:0,fill:true,tension:.35,spanGaps:true},
-      {label:'Ret. Rusia-USA-EUR',data:k3init.TRET, borderColor:'#f97316',backgroundColor:'rgba(249,115,22,.08)',  borderWidth:2.5,pointRadius:0,fill:true,tension:.35,spanGaps:true},
-      {label:'Centro Sudamérica', data:k3init.TCS,  borderColor:'#f59e0b',backgroundColor:'rgba(245,158,11,.08)',  borderWidth:2.5,pointRadius:0,fill:true,tension:.35,spanGaps:true},
+      {label:'Europa',            data:k3init.TE,   borderColor:'#3b82f6',backgroundColor:'rgba(59,130,246,.08)',  borderWidth:2.5,pointRadius:0,fill:true,tension:.35,spanGaps:true,cubicInterpolationMode:"monotone"},
+      {label:'Far East',          data:k3init.TFE,  borderColor:'#10b981',backgroundColor:'rgba(16,185,129,.08)',  borderWidth:2.5,pointRadius:0,fill:true,tension:.35,spanGaps:true,cubicInterpolationMode:"monotone"},
+      {label:'USA Canadá',        data:k3init.TU,   borderColor:'#a78bfa',backgroundColor:'rgba(167,139,250,.08)', borderWidth:2.5,pointRadius:0,fill:true,tension:.35,spanGaps:true,cubicInterpolationMode:"monotone"},
+      {label:'Ret. Rusia-USA-EUR',data:k3init.TRET, borderColor:'#f97316',backgroundColor:'rgba(249,115,22,.08)',  borderWidth:2.5,pointRadius:0,fill:true,tension:.35,spanGaps:true,cubicInterpolationMode:"monotone"},
+      {label:'Centro Sudamérica', data:k3init.TCS,  borderColor:'#f59e0b',backgroundColor:'rgba(245,158,11,.08)',  borderWidth:2.5,pointRadius:0,fill:true,tension:.35,spanGaps:true,cubicInterpolationMode:"monotone"},
     ]},
     options:merge(defs,{
       plugins:{
@@ -914,8 +914,10 @@ function update() {
     periodoLabel = 'Abr 2023 – Mar 2026';
   } else {
     const y = +sAño;
-    const mesIni = (y===2023) ? 'Mar' : 'Ene';
-    const mesFin = (y===2026) ? 'Feb' : 'Dic';
+    const _sd=new Date(ULTIMO_AÑO,ULTIMO_MES-1-35,1);
+    const _pSY=_sd.getFullYear(), _pSM=_sd.getMonth()+1;
+    const mesIni = MESES_ES[(y===_pSY ? _pSM : 1)-1];
+    const mesFin = MESES_ES[(y===ULTIMO_AÑO ? ULTIMO_MES : 12)-1];
     periodoLabel = mesIni+' '+y+' – '+mesFin+' '+y;
   }
   document.getElementById('hdr-periodo').textContent = periodoLabel;
@@ -1016,7 +1018,15 @@ function computeKPI3(recs, año) {
     const sd=new Date(endY,endMo-1-35,1);
     startY=sd.getFullYear(); startMo=sd.getMonth()+1; nMonths=36;
   } else {
-    startY=+año; startMo=1; nMonths=12;
+    // Calcular rango intersectado con el período real (ej. 2023 empieza en Abr, 2026 termina en Mar)
+    const _endMo=ULTIMO_MES, _endY=ULTIMO_AÑO;
+    const _sd=new Date(_endY,_endMo-1-35,1);
+    const _pStartY=_sd.getFullYear(), _pStartM=_sd.getMonth()+1;
+    const _y=+año;
+    startY=_y;
+    startMo = (_y===_pStartY) ? _pStartM : 1;
+    const _endM = (_y===_endY) ? _endMo : 12;
+    nMonths = _endM - startMo + 1;
   }
   const labs=[], tE=[], tFE=[], tU=[], tRET=[], tCS=[];
   // Filtrar por área/naviera si hay filtro activo
