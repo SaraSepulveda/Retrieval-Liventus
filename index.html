@@ -1039,6 +1039,20 @@ function loadCSV(input) {
   input.value='';
 }
 
+// Simple CSV line parser (handles quoted fields)
+function parseCSVLine(line) {
+  const result=[];
+  let cur='',inQ=false;
+  for(let i=0;i<line.length;i++) {
+    const c=line[i];
+    if(c==='"'){inQ=!inQ;}
+    else if(c===','&&!inQ){result.push(cur);cur='';}
+    else{cur+=c;}
+  }
+  result.push(cur);
+  return result;
+}
+
 function processCSV(text, fname) {
   // Calculate 36-month window — regla 2 meses atrás (siempre mes cerrado)
   const endM  = ULTIMO_MES;
@@ -1233,4 +1247,38 @@ function processCSV(text, fname) {
     }
     return {t:tot,a:arr,r:tot>0?Math.round(arr/tot*1000)/10:0};
   }
-  INTAKE_LABELS=newIL; 
+  INTAKE_LABELS=newIL; INTAKE_TOTAL=newIT; INTAKE_ARRIVED=newIA; INTAKE_AREA_MONTH=newIAM;
+  W36=wStat(36); W24=wStat(24); W12=wStat(12);
+  TOTAL_PERIOD = W36.t;  // total llegadas en ventana — actualizado con CSV nuevo
+  C2R.data.labels=newIL;
+  C2R.data.datasets[0].data=newIA;
+  C2R.data.datasets[1].data=newIT.map((t,i)=>Math.max(0,t-newIA[i]));
+  applyC2RColors();  // aplica colores iniciales (todos activos cuando sAño='all')
+  updateKPI2rCards(W36,W24,W12);
+
+  // Rebuild filter UI & reset filters
+  buildFilters();
+  sAño='all'; sArea='all'; sNav='all';
+  document.getElementById('fba').querySelectorAll('.fb').forEach(b=>{
+    b.classList.toggle('ay',b.dataset.v==='all');
+  });
+  update();
+}
+
+
+buildFilters();
+initCharts();
+update();
+
+// Acceso oculto — Ctrl+Shift+U activa el panel de carga de datos
+document.addEventListener('keydown', function(e) {
+  if (e.ctrlKey && e.shiftKey && (e.key === 'U' || e.key === 'u')) {
+    var zone = document.getElementById('uploadZone');
+    var visible = zone.style.display === 'flex';
+    zone.style.display = visible ? 'none' : 'flex';
+    if (!visible) document.getElementById('csvIn').click();
+  }
+});
+</script>
+</body>
+</html>
