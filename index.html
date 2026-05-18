@@ -359,9 +359,9 @@ let W12={t:8582,a:5901,r:68.8};
 
 // ── Totales de servicios (incluye casos abiertos) — para % en tarjeta total ──
 let TOTAL_SERV={"2023":2810,"2024":6365,"2025":8554,"2026":1865};
-let TOTAL_PERIOD=19555;  // total llegadas en el período (para % en tarjeta)
-const TOTAL_SERV_NAV={"MSC":{"2023":598,"2024":1405,"2025":1975,"2026":77},"SEATRADE":{"2023":250,"2024":453,"2025":604,"2026":118},"HAPAG LLOYD":{"2023":1176,"2024":1375,"2025":1746,"2026":303},"CMA CGM":{"2023":316,"2024":608,"2025":293,"2026":19},"COSCO":{"2023":280,"2024":534,"2025":823,"2026":88},"NETWORK SHIPPING":{"2023":449,"2024":528,"2025":939,"2026":79},"COOL CARRIERS":{"2023":163,"2024":428,"2025":1139,"2026":337},"EVERGREEN":{"2023":149,"2024":84,"2025":140,"2026":9},"WAN HAI":{"2023":11,"2024":55,"2025":51,"2026":2},"ZIM":{"2023":120,"2024":44,"2025":310,"2026":8},"SEABOARD":{"2023":15,"2024":239,"2025":42,"2026":8},"UNIFEEDER":{"2023":1},"OOCL":{"2023":19,"2024":27,"2025":190,"2026":106},"YANG MING":{"2023":42,"2024":32,"2025":12,"2026":1},"ONE LINE":{"2023":55,"2024":77,"2025":115,"2026":12},"CMA-CGM":{"2023":1,"2024":3,"2025":2},"KING OCEAN":{"2024":7},"MAERSK":{"2024":10,"2025":370},"PACIFIC LOGISTIC":{"2024":7},"DOLE":{"2025":5},"GLOBAL REEFERS":{"2025":1},"DAL":{"2025":1},"MACS":{"2025":4},"NETWORK SHIPPING LTD":{"2025":1,"2026":1},"COOL CARRIER":{"2025":2,"2026":59},"SEATRUST":{"2026":2}};
-const TOTAL_NAV_PERIOD={"MSC":4055,"SEATRADE":1425,"HAPAG LLOYD":4600,"CMA CGM":1236,"COSCO":1725,"NETWORK SHIPPING":1995,"COOL CARRIERS":2067,"EVERGREEN":382,"WAN HAI":119,"ZIM":482,"SEABOARD":304,"UNIFEEDER":1,"OOCL":342,"YANG MING":87,"ONE LINE":259,"CMA-CGM":6,"KING OCEAN":7,"MAERSK":380,"PACIFIC LOGISTIC":7,"DOLE":5,"GLOBAL REEFERS":1,"DAL":1,"MACS":4,"NETWORK SHIPPING LTD":2,"COOL CARRIER":61,"SEATRUST":2};
+let TOTAL_PERIOD=19594;  // total llegadas en el período (para % en tarjeta)
+const TOTAL_SERV_NAV={"MAERSK":{"2025":370,"2024":10},"MSC":{"2025":1975,"2024":1405,"2023":591,"2026":89},"HAPAG LLOYD":{"2025":1746,"2024":1375,"2026":345,"2023":1161},"COOL CARRIERS":{"2026":398,"2025":1141,"2024":428,"2023":156},"EVERGREEN":{"2025":140,"2023":149,"2024":84,"2026":16},"COSCO":{"2025":823,"2026":90,"2024":534,"2023":270},"CMA CGM":{"2025":295,"2024":611,"2023":312,"2026":19},"OOCL":{"2026":112,"2025":190,"2023":19,"2024":27},"SEATRADE":{"2025":604,"2026":128,"2024":452,"2023":237},"WAN HAI":{"2025":51,"2024":55,"2023":11,"2026":2},"ZIM":{"2024":44,"2025":310,"2023":120,"2026":8},"NETWORK SHIPPING":{"2025":940,"2024":528,"2026":99,"2023":441},"ONE LINE":{"2025":115,"2026":12,"2023":55,"2024":77},"YANG MING":{"2025":12,"2023":42,"2024":32,"2026":1},"SEABOARD":{"2026":12,"2025":42,"2024":238,"2023":15},"GLOBAL REEFERS":{"2025":1},"DAL":{"2025":1},"SEATRUST":{"2026":4},"MACS":{"2025":4},"DOLE":{"2025":5},"PACIFIC LOGISTIC":{"2024":7},"KING OCEAN":{"2024":7},"UNIFEEDER":{"2023":1}};
+const TOTAL_NAV_PERIOD={"MAERSK":380,"MSC":4060,"HAPAG LLOYD":4627,"COOL CARRIERS":2123,"EVERGREEN":389,"COSCO":1717,"CMA CGM":1237,"OOCL":348,"SEATRADE":1421,"WAN HAI":119,"ZIM":482,"NETWORK SHIPPING":2008,"ONE LINE":259,"YANG MING":87,"SEABOARD":307,"GLOBAL REEFERS":1,"DAL":1,"SEATRUST":4,"MACS":4,"DOLE":5,"PACIFIC LOGISTIC":7,"KING OCEAN":7,"UNIFEEDER":1};
 
 // ═══════════════════════════════════════════════════════
 // CONSTANTS & HELPERS
@@ -540,9 +540,9 @@ function updateProductivity(baseRecs) {
   });
 }
 
-function updateKPI2rCards(w36,w24,w12){
+function updateKPI2rCards(w36,w24,w12,filtRecs){
   if(sAño==='all'){
-    // Vista completa — ventanas móviles
+    // Vista completa — ventanas móviles (valores ya calculados dinámicamente en update())
     document.querySelector('[for-card="k2r36"]').textContent = 'Últimos 36 Meses';
     document.querySelector('[for-card="k2r24"]').textContent = 'Últimos 24 Meses';
     document.querySelector('[for-card="k2r12"]').textContent = 'Últimos 12 Meses';
@@ -553,11 +553,22 @@ function updateKPI2rCards(w36,w24,w12){
     document.getElementById('k2r12').textContent     = w12.a.toLocaleString('es');
     document.getElementById('k2r12-sub').textContent = w12.t.toLocaleString('es')+' servicios · '+w12.r+'% rec.';
   } else {
-    // Año seleccionado — calcular totales del año desde INTAKE
-    let totY=0, recY=0;
-    INTAKE_LABELS.forEach((l,i)=>{ if(Math.floor(parseInt(l)/100)===+sAño){ totY+=INTAKE_TOTAL[i]||0; recY+=INTAKE_ARRIVED[i]||0; }});
-    const pctY = totY>0 ? +(recY/totY*100).toFixed(1) : 0;
-    const pndY = totY - recY;
+    // Año seleccionado — si hay filtro de naviera/área, calcular desde registros filtrados
+    let totY, recY, pctY, pndY;
+    if(filtRecs && (sNav!=='all' || sArea!=='all')){
+      // Usar registros filtrados (naviera/área activa)
+      const recsY = filtRecs.filter(r=>r.a===+sAño);
+      totY = recsY.length;
+      recY = recsY.filter(r=>r.t!==null).length;
+      pctY = totY>0 ? +(recY/totY*100).toFixed(1) : 0;
+      pndY = totY - recY;
+    } else {
+      // Sin filtro específico — calcular desde INTAKE (total de servicios incl. abiertos)
+      totY=0; recY=0;
+      INTAKE_LABELS.forEach((l,i)=>{ if(Math.floor(parseInt(l)/100)===+sAño){ totY+=INTAKE_TOTAL[i]||0; recY+=INTAKE_ARRIVED[i]||0; }});
+      pctY = totY>0 ? +(recY/totY*100).toFixed(1) : 0;
+      pndY = totY - recY;
+    }
     document.querySelector('[for-card="k2r36"]').textContent = 'Total Servicios '+sAño;
     document.querySelector('[for-card="k2r24"]').textContent = 'Recuperados '+sAño;
     document.querySelector('[for-card="k2r12"]').textContent = 'Tasa de Recuperación';
@@ -952,8 +963,13 @@ function update() {
   // Luz/sombra en C2R según año seleccionado
   applyC2RColors();
 
-  // Tarjetas KPI2 — se ajustan al año seleccionado
-  updateKPI2rCards(W36,W24,W12);
+  // Tarjetas KPI2 — computadas dinámicamente (reactivo a naviera + área)
+  const _recsBase = filteredRecs(true); // todos los años, filtrado por nav+área
+  const _dynWin = function(rs){ const t=rs.length, a=rs.filter(r=>r.t!==null).length, r=t>0?+(a/t*100).toFixed(1):0; return{t,a,r}; };
+  const _dynW36 = _dynWin(_recsBase);
+  const _dynW24 = _dynWin(_recsBase.filter(r=>r.a>2024||(r.a===2024&&r.m>=4)));
+  const _dynW12 = _dynWin(_recsBase.filter(r=>r.a>2025||(r.a===2025&&r.m>=4)));
+  updateKPI2rCards(_dynW36, _dynW24, _dynW12, _recsBase);
 }
 
 // ═══════════════════════════════════════════════════════
