@@ -559,13 +559,14 @@ function updateKPI2rCards(w36,w24,w12,filtRecs){
       // Usar registros filtrados (naviera/área activa)
       const recsY = filtRecs.filter(r=>r.a===+sAño);
       if(sNav!=='all'){
-        totY = ((TOTAL_SERV_NAV[sNav]||{})[+sAño]) || recsY.length;
+        totY = recsY.length;
+        recY = recsY.filter(r=>r.t!==null).length;
       } else {
         let intakeY=0;
         INTAKE_LABELS.forEach((l,i)=>{ if(Math.floor(parseInt(l)/100)===+sAño) intakeY+=INTAKE_TOTAL[i]||0; });
         totY = intakeY || recsY.length;
+        recY = recsY.filter(r=>r.t!==null).length;
       }
-      recY = recsY.length;  // todos en RECORDS tienen fecha = recuperados
       pctY = totY>0 ? +(recY/totY*100).toFixed(1) : 0;
       pndY = totY - recY;
     } else {
@@ -907,7 +908,7 @@ function update() {
   if(sArea!=='all') filtros.push(sArea);
   let refLabel, totRef;
   if(sNav!=='all'){
-    totRef = sAño!=='all' ? ((TOTAL_SERV_NAV[sNav]||{})[sAño]||0) : (TOTAL_NAV_PERIOD[sNav]||0);
+    totRef = filteredRecs(true).filter(r=>sAño==='all'||r.a===+sAño).length;
     const pctNav = totRef>0?Math.round(nAll/totRef*100):0;
     refLabel = pctNav+'% del total '+sNav+' '+periodoLabel+(filtros.length?' · '+filtros.join(' + '):'');
   } else {
@@ -980,18 +981,10 @@ function update() {
   // Tarjetas KPI2 — computadas dinámicamente (reactivo a naviera + área)
   const _recsBase = filteredRecs(true); // todos los años, filtrado por nav+área
   // Totales reales por ventana — usa TOTAL_SERV_NAV si hay filtro de naviera
-  const _navT = sNav!=='all' ? (TOTAL_SERV_NAV[sNav]||{}) : {};
-  const _navPeriod = sNav!=='all' ? (TOTAL_NAV_PERIOD[sNav]||0) : 0;
-  // W36: Apr23-Mar26 = todo el período de naviera
-  const _tot36 = _navPeriod || _recsBase.length;
-  // W24: Apr24-Mar26 = años 2024+2025+2026
-  const _tot24 = _navPeriod>0 ? ((_navT[2024]||0)+(_navT[2025]||0)+(_navT[2026]||0)) : _recsBase.filter(r=>r.a>2024||(r.a===2024&&r.m>=4)).length;
-  // W12: Apr25-Mar26 = años 2025+2026
-  const _tot12 = _navPeriod>0 ? ((_navT[2025]||0)+(_navT[2026]||0)) : _recsBase.filter(r=>r.a>2025||(r.a===2025&&r.m>=4)).length;
-  const _dynWin = function(rs, trueTotal){ const t=trueTotal||rs.length, a=rs.length, r=t>0?+(a/t*100).toFixed(1):0; return{t,a,r}; };
-  const _dynW36 = _dynWin(_recsBase, _tot36);
-  const _dynW24 = _dynWin(_recsBase.filter(r=>r.a>2024||(r.a===2024&&r.m>=4)), _tot24);
-  const _dynW12 = _dynWin(_recsBase.filter(r=>r.a>2025||(r.a===2025&&r.m>=4)), _tot12);
+  const _dynWin = function(rs){ const t=rs.length, a=rs.filter(r=>r.t!==null).length, r=t>0?+(a/t*100).toFixed(1):0; return{t,a,r}; };
+  const _dynW36 = _dynWin(_recsBase);
+  const _dynW24 = _dynWin(_recsBase.filter(r=>r.a>2024||(r.a===2024&&r.m>=4)));
+  const _dynW12 = _dynWin(_recsBase.filter(r=>r.a>2025||(r.a===2025&&r.m>=4)));
   updateKPI2rCards(_dynW36, _dynW24, _dynW12, _recsBase);
 }
 
