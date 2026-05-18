@@ -987,7 +987,8 @@ function computeKPI3(recs, año) {
   }
   const labs=[], tE=[], tFE=[], tU=[], tRET=[], tCS=[];
   // Filtrar por área/naviera si hay filtro activo
-  const useIntake = Object.keys(INTAKE_AREA_MONTH).length > 0;
+  // Usar INTAKE solo cuando no hay filtro activo de naviera o área
+  const useIntake = Object.keys(INTAKE_AREA_MONTH).length > 0 && sNav==='all' && sArea==='all';
   for(let i=0;i<nMonths;i++){
     let y=startY, m=startMo+i;
     while(m>12){m-=12;y++;}
@@ -995,11 +996,11 @@ function computeKPI3(recs, año) {
     const ik=y*100+m;
     const getArea = ar => {
       if(useIntake){
-        // Siempre usa INTAKE (todos los servicios) cuando está disponible
+        // Sin filtro: usa INTAKE (total de servicios incl. abiertos)
         const cnt=(INTAKE_AREA_MONTH[ar]||{})[ik]||0;
         return cnt>0?cnt:null;
       } else {
-        // Fallback sin CSV: usa RECORDS filtrados
+        // Con filtro de naviera/área: usa registros filtrados
         const cnt=recs.filter(r=>r.a===y&&r.m===m&&r.ar===ar).length;
         return cnt>0?cnt:null;
       }
