@@ -558,7 +558,13 @@ function updateKPI2rCards(w36,w24,w12,filtRecs){
     if(filtRecs && (sNav!=='all' || sArea!=='all')){
       // Usar registros filtrados (naviera/área activa)
       const recsY = filtRecs.filter(r=>r.a===+sAño);
-      totY = recsY.length;
+      if(sNav!=='all'){
+        totY = ((TOTAL_SERV_NAV[sNav]||{})[+sAño]) || recsY.length;
+      } else {
+        let intakeY=0;
+        INTAKE_LABELS.forEach((l,i)=>{ if(Math.floor(parseInt(l)/100)===+sAño) intakeY+=INTAKE_TOTAL[i]||0; });
+        totY = intakeY || recsY.length;
+      }
       recY = recsY.filter(r=>r.t!==null).length;
       pctY = totY>0 ? +(recY/totY*100).toFixed(1) : 0;
       pndY = totY - recY;
