@@ -358,8 +358,10 @@ let TOTAL_PERIOD=19971;  // total llegadas en el período (para % en tarjeta)
 const TOTAL_SERV_NAV={"SEATRADE":{"2023":224,"2024":452,"2025":604,"2026":144},"EVERGREEN":{"2023":140,"2024":84,"2025":140,"2026":30},"HAPAG LLOYD":{"2023":1113,"2024":1375,"2025":1746,"2026":423},"COSCO":{"2023":257,"2024":534,"2025":823,"2026":99},"MSC":{"2023":570,"2024":1405,"2025":1975,"2026":138},"ZIM":{"2023":120,"2024":44,"2025":310,"2026":8},"NETWORK SHIPPING":{"2023":441,"2024":528,"2025":940,"2026":103},"COOL CARRIERS":{"2023":155,"2024":428,"2025":1141,"2026":639},"WAN HAI":{"2023":11,"2024":55,"2025":51,"2026":2},"YANG MING":{"2023":42,"2024":32,"2025":12,"2026":1},"OOCL":{"2023":19,"2024":27,"2025":190,"2026":173},"CMA CGM":{"2023":311,"2024":611,"2025":295,"2026":19},"ONE LINE":{"2023":55,"2024":77,"2025":115,"2026":21},"SEABOARD":{"2023":15,"2024":238,"2025":42,"2026":13},"MAERSK":{"2024":10,"2025":370},"DOLE":{"2025":5},"PACIFIC LOGISTIC":{"2024":7},"GLOBAL REEFERS":{"2025":1},"DAL":{"2025":1},"MACS":{"2025":4,"2026":1},"SEATRUST":{"2026":4},"UNIFEEDER":{"2023":1},"KING OCEAN":{"2024":7}};
 const TOTAL_NAV_PERIOD={"MAERSK":380,"MSC":4060,"HAPAG LLOYD":4627,"COOL CARRIERS":2123,"EVERGREEN":389,"COSCO":1717,"CMA CGM":1237,"OOCL":348,"SEATRADE":1421,"WAN HAI":119,"ZIM":482,"NETWORK SHIPPING":2008,"ONE LINE":259,"YANG MING":87,"SEABOARD":307,"GLOBAL REEFERS":1,"DAL":1,"SEATRUST":4,"MACS":4,"DOLE":5,"PACIFIC LOGISTIC":7,"KING OCEAN":7,"UNIFEEDER":1};
 
-// Fix permanente: ejes nítidos en pantallas de alta resolución (Retina/HiDPI)
+// Fix permanente: ejes nítidos + texto legible en pantallas de alta resolución
 Chart.defaults.devicePixelRatio = window.devicePixelRatio || 2;
+Chart.defaults.font.size = 11;
+Chart.defaults.font.weight = '600';
 // ═══════════════════════════════════════════════════════
 // CONSTANTS & HELPERS
 // ═══════════════════════════════════════════════════════
@@ -630,8 +632,8 @@ function initCharts() {
     devicePixelRatio: window.devicePixelRatio || 2,
     plugins:{legend:{display:false},tooltip:{callbacks:{}} },
     scales:{
-      x:{grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'#64748b',font:{size:10}}},
-      y:{grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'#64748b',font:{size:10}}}
+      x:{grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'#94a3b8',font:{size:11,weight:'600'}}},
+      y:{grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'#94a3b8',font:{size:11,weight:'600'}}}
     }
   };
   const merge=(a,b)=>{
