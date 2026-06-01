@@ -1026,18 +1026,6 @@ function update() {
   // Productividad — usa mismos registros de KPI3 (filtrado por área+naviera, todos los años)
   updateProductivity(recs3);
 
-  // C2R: si hay filtro de naviera/área, recalcular barras desde RECORDS
-  if(sNav!=='all' || sArea!=='all'){
-    const _br = filteredRecs(true); // tramo+nav+área, ignora año
-    const _pm = {};
-    _br.forEach(r=>{ const k=r.a*100+r.m; _pm[k]=(_pm[k]||0)+1; });
-    const _ra = INTAKE_LABELS.map(l=>_pm[parseInt(l)]||0);
-    C2R.data.datasets[0].data = _ra;
-    C2R.data.datasets[1].data = _ra.map(()=>0); // pendientes no disponibles por naviera
-  } else {
-    C2R.data.datasets[0].data = INTAKE_ARRIVED;
-    C2R.data.datasets[1].data = INTAKE_TOTAL.map((t,i)=>Math.max(0,t-INTAKE_ARRIVED[i]));
-  }
   applyC2RColors();
 
   // Tarjetas KPI2 — computadas dinámicamente (reactivo a naviera + área)
