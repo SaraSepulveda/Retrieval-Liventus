@@ -197,45 +197,59 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
     <div style="font-size:.68rem;font-weight:700;color:var(--soft);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px">
       Productividad del Sistema
     </div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px">
-      <!-- T1 -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px">
+      <!-- 2023 -->
       <div class="card" style="padding:12px 16px">
-        <div style="font-size:.65rem;color:var(--soft);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">📅 Tramo 1 · Abr 23–Mar 24</div>
+        <div style="font-size:.65rem;color:var(--soft);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">📅 2023</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
           <div>
-            <div id="prodT1" style="font-size:1.8rem;font-weight:700;color:#10b981;line-height:1">&ndash;</div>
+            <div id="prod2023" style="font-size:1.8rem;font-weight:700;color:#10b981;line-height:1">&ndash;</div>
             <div style="font-size:.62rem;color:var(--soft);margin-top:3px">equip. lab / sem.</div>
           </div>
           <div>
-            <div id="prodT1-sub" style="font-size:1.8rem;font-weight:700;color:#10b981;line-height:1">&ndash;</div>
+            <div id="prod2023-sub" style="font-size:1.8rem;font-weight:700;color:#10b981;line-height:1">&ndash;</div>
             <div style="font-size:.62rem;color:var(--soft);margin-top:3px">sem. prom. recuperación</div>
           </div>
         </div>
       </div>
-      <!-- T2 -->
+      <!-- 2024 -->
       <div class="card" style="padding:12px 16px">
-        <div style="font-size:.65rem;color:var(--soft);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">👉 Tramo 2 · Abr 24–Mar 25</div>
+        <div style="font-size:.65rem;color:var(--soft);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">👉 2024</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
           <div>
-            <div id="prodT2" style="font-size:1.8rem;font-weight:700;color:#a78bfa;line-height:1">&ndash;</div>
+            <div id="prod2024" style="font-size:1.8rem;font-weight:700;color:#a78bfa;line-height:1">&ndash;</div>
             <div style="font-size:.62rem;color:var(--soft);margin-top:3px">equip. lab / sem.</div>
           </div>
           <div>
-            <div id="prodT2-sub" style="font-size:1.8rem;font-weight:700;color:#a78bfa;line-height:1">&ndash;</div>
+            <div id="prod2024-sub" style="font-size:1.8rem;font-weight:700;color:#a78bfa;line-height:1">&ndash;</div>
             <div style="font-size:.62rem;color:var(--soft);margin-top:3px">sem. prom. recuperación</div>
           </div>
         </div>
       </div>
-      <!-- T3 -->
+      <!-- 2025 -->
+      <div class="card" style="padding:12px 16px">
+        <div style="font-size:.65rem;color:var(--soft);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">🚀 2025</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div>
+            <div id="prod2025" style="font-size:1.8rem;font-weight:700;color:#f59e0b;line-height:1">&ndash;</div>
+            <div style="font-size:.62rem;color:var(--soft);margin-top:3px">equip. lab / sem.</div>
+          </div>
+          <div>
+            <div id="prod2025-sub" style="font-size:1.8rem;font-weight:700;color:#f59e0b;line-height:1">&ndash;</div>
+            <div style="font-size:.62rem;color:var(--soft);margin-top:3px">sem. prom. recuperación</div>
+          </div>
+        </div>
+      </div>
+      <!-- 2026 -->
       <div class="card" style="padding:12px 16px;border:1px solid rgba(99,102,241,.35)">
-        <div style="font-size:.65rem;color:var(--soft);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">🚀 Tramo 3 · Abr 25–Mar 26</div>
+        <div style="font-size:.65rem;color:var(--soft);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">⚙️ 2026</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
           <div>
-            <div id="prodT3" style="font-size:1.8rem;font-weight:700;color:#f59e0b;line-height:1">&ndash;</div>
+            <div id="prod2026" style="font-size:1.8rem;font-weight:700;color:#6366f1;line-height:1">&ndash;</div>
             <div style="font-size:.62rem;color:var(--soft);margin-top:3px">equip. lab / sem.</div>
           </div>
           <div>
-            <div id="prodT3-sub" style="font-size:1.8rem;font-weight:700;color:#f59e0b;line-height:1">&ndash;</div>
+            <div id="prod2026-sub" style="font-size:1.8rem;font-weight:700;color:#6366f1;line-height:1">&ndash;</div>
             <div style="font-size:.62rem;color:var(--soft);margin-top:3px">sem. prom. recuperación</div>
           </div>
         </div>
@@ -527,27 +541,26 @@ function buildScatterDatasets(recs){
 }
 
 function updateProductivity(baseRecs) {
-  // baseRecs: registros filtrados por nav+área (sin filtro de tramo/año)
   var src = baseRecs || RECORDS;
-  var TDEFS = [
-    {id:'T1',fn:function(r){return (r.a===2023&&r.m>=4)||(r.a===2024&&r.m<=3);},col:'#10b981'},
-    {id:'T2',fn:function(r){return (r.a===2024&&r.m>=4)||(r.a===2025&&r.m<=3);},col:'#a78bfa'},
-    {id:'T3',fn:function(r){return (r.a===2025&&r.m>=4)||(r.a===2026&&r.m<=3);},col:'#f59e0b'}
-  ];
-  TDEFS.forEach(function(td) {
-    var rt   = src.filter(td.fn);
-    var numEl= document.getElementById('prod'+td.id);
-    var subEl= document.getElementById('prod'+td.id+'-sub');
+  var years = [2023, 2024, 2025, 2026];
+  // Años cubiertos por cada tramo (para opacidad cuando filtro de tramo activo)
+  var tramoYears = {t1:[2023,2024], t2:[2024,2025], t3:[2025,2026]};
+  years.forEach(function(y) {
+    var recsY = src.filter(function(r){ return r.a === y; });
+    var numEl = document.getElementById('prod'+y);
+    var subEl = document.getElementById('prod'+y+'-sub');
     if(!numEl||!subEl) return;
     var card = numEl.closest('.card');
-    // Resaltar: tramo activo tiene prioridad
-    card.style.opacity = (sTramo!=='all' && sTramo!==td.id.toLowerCase()) ? '0.4' : '1';
-    if(!rt.length){numEl.textContent='–';subEl.textContent='sin datos';return;}
-    var avgT = rt.reduce(function(s,r){return s+r.t;},0)/rt.length;
-    // opWeeks = span de meses del tramo × 4.33
-    var mSpan= rt.map(function(r){return r.a*12+r.m;});
-    var opW  = (Math.max.apply(null,mSpan)-Math.min.apply(null,mSpan)+1)*4.33;
-    numEl.textContent = Math.round(rt.length/opW).toLocaleString('es');
+    // Opacidad: año activo tiene prioridad; si tramo activo, destacar años del tramo
+    var active = true;
+    if(sAño!=='all') active = +sAño === y;
+    else if(sTramo!=='all') active = (tramoYears[sTramo]||[]).indexOf(y) >= 0;
+    card.style.opacity = active ? '1' : '0.4';
+    if(!recsY.length){numEl.textContent='–';subEl.textContent='sin datos';return;}
+    var avgT = recsY.reduce(function(s,r){return s+r.t;},0)/recsY.length;
+    var months = recsY.map(function(r){return r.m;});
+    var opWeeks = (Math.max.apply(null,months)-Math.min.apply(null,months)+1)*4.33;
+    numEl.textContent = Math.round(recsY.length/opWeeks).toLocaleString('es');
     subEl.textContent = avgT.toFixed(1).replace('.',',');
   });
 }
